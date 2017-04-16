@@ -1,26 +1,29 @@
 package otus.ru.object.size.measure.data.generator;
 
-public class IntegerGenerator  implements DataGenerator {
+import java.util.Random;
+
+public class IntegerGenerator  extends AbstractSingleDataGenerator {
     private static final String DESCRIPTION = "Integer";
+    private Integer data;
 
     @Override
     public String getDescription(){
         return DESCRIPTION;
-    };
+    }
 
     @Override
     public void generate(int dataLength){
-
-    };
+        data = new Random().nextInt();
+    }
 
     @Override
     public Object getData(){
-        return new Integer(10000);
-    };
+        return data;
+    }
 
     @Override
-    public boolean isCollection(){
-        return false;
+    public void clearData() {
+        data =  null;
     }
 }
 

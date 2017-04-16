@@ -8,4 +8,6 @@ public interface DataGenerator {
     Object getData();
 
     boolean isCollection();
+
+    void clearData();
 }

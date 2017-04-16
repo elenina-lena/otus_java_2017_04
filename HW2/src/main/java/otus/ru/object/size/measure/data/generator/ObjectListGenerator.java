@@ -1,17 +1,16 @@
 package otus.ru.object.size.measure.data.generator;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-public class IntegerListGenerator extends AbstractCollectionGenerator {
-    private static final String DESCRIPTION = "Integer list";
+public class ObjectListGenerator  extends AbstractCollectionGenerator {
+    private static final String DESCRIPTION = "Object list";
 
-    private List<Integer> data = new ArrayList<>();
+    private List<Object> data = new ArrayList<>();
 
     @Override
-    public void createObject(){
+    public void createObject() {
         if (data == null) {
             data = new ArrayList<>();
         }
@@ -23,21 +22,21 @@ public class IntegerListGenerator extends AbstractCollectionGenerator {
     }
 
     @Override
-    public String getDescription(){
+    public String getDescription() {
         return DESCRIPTION;
     }
 
     @Override
-    public void generate(int dataLength){
+    public void generate(int dataLength) {
         createObject();
 
-        for (int i = 0; i < dataLength; i++){
-            data.add(new Random().nextInt());
+        for (int i = 0; i < dataLength; i++) {
+            data.add(new Object());
         }
     }
 
     @Override
-    public Object getData(){
+    public Object getData() {
         return data;
     }
 }

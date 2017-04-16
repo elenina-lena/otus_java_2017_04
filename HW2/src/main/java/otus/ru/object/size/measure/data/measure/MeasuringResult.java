@@ -1,20 +1,16 @@
 package otus.ru.object.size.measure.data.measure;
 
-import otus.ru.object.size.measure.data.generator.DataGenerator;
-
 public class MeasuringResult {
-    private DataGenerator dataGenerator;
+    private String description;
     private long bytes;
     private int length;
+    private boolean isCollection;
 
-    MeasuringResult(DataGenerator dataGenerator, long bytes, int length){
-        this.dataGenerator = dataGenerator;
+    public MeasuringResult(String description, long bytes, int length, boolean isCollection){
+        this.description = description;
         this.bytes = bytes;
         this.length = length;
-    }
-
-    public DataGenerator getDataGenerator() {
-        return dataGenerator;
+        this.isCollection = isCollection;
     }
 
     public long getBytes() {
@@ -23,5 +19,13 @@ public class MeasuringResult {
 
     public int getLength() {
         return length;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public boolean isCollection() {
+        return isCollection;
     }
 }

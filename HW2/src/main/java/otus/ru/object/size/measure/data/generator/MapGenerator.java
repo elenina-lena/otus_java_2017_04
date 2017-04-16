@@ -1,18 +1,16 @@
 package otus.ru.object.size.measure.data.generator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-public class LongListGenerator extends AbstractCollectionGenerator {
-    private static final String DESCRIPTION = "Long list";
+public class MapGenerator extends AbstractCollectionGenerator {
+    private static final String DESCRIPTION = "HahsMap";
 
-    private List<Long> data = new ArrayList<>();
+    private Map<Long, Long> data = new HashMap<>();
 
     @Override
     void createObject() {
         if (data == null){
-            data = new ArrayList<>();
+            data = new HashMap<>();
         }
     }
 
@@ -31,7 +29,10 @@ public class LongListGenerator extends AbstractCollectionGenerator {
         createObject();
 
         for (int i = 0; i < dataLength; i++){
-            data.add(new Random().nextLong());
+            Long key = new Random().nextLong();
+            Long value = new Random().nextLong();
+
+            data.put(key, value);
         }
     }
 
@@ -40,4 +41,3 @@ public class LongListGenerator extends AbstractCollectionGenerator {
         return data;
     }
 }
-
