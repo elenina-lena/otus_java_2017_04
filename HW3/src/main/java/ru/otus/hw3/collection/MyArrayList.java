@@ -3,41 +3,42 @@ package ru.otus.hw3.collection;
 import java.util.*;
 
 public class MyArrayList<E> implements List<E> {
-    private Object[] data = {};
+    private static final int DEFAULT_LIST_SIZE = 10;
+    private Object[] elements = {};
+    private int elementsCount;
+
+    public MyArrayList() {
+        this(DEFAULT_LIST_SIZE);
+    }
+
+    public MyArrayList(int length) {
+        elements = new Object[length];
+        elementsCount = 0;
+    }
 
     @Override
     public int size() {
-        return data.length;
+        return elementsCount;
     }
 
     @Override
     public boolean isEmpty() {
-        return data.length == 0;
+        return elementsCount == 0;
     }
 
     @Override
     public boolean contains(Object o) {
-        boolean isNullObject = isNullObject(o);
-
-        for (Object item : data){
-            boolean isNullElement = isNullObject(item);
-
-            if ((isNullElement && isNullObject) || (!isNullElement && item.equals(o))){
-                return true;
-            }
-        }
-
-        return false;
+        return indexOf(o) > -1;
     }
 
     @Override
     public Iterator<E> iterator() {
-        return new MyIterator<E>();
+        return new MyListIterator();
     }
 
     @Override
     public Object[] toArray() {
-        return Arrays.copyOf(data, data.length);
+        return Arrays.copyOf(elements, elementsCount);
     }
 
     @Override
@@ -47,19 +48,10 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public boolean add(E e) {
-        Object[] copy = Arrays.copyOf(data, data.length);
+        resize();
 
-        int newLength = copy.length + 1;
-        data = new Object[newLength];
-
-        for (int i = 0; i < newLength; i++){
-            if (i == copy.length){
-                data[i] = e;
-            }
-            else {
-                data[i] = copy[i];
-            }
-        }
+        elements[elementsCount] = e;
+        elementsCount += 1;
 
         return true;
     }
@@ -72,20 +64,18 @@ public class MyArrayList<E> implements List<E> {
         if (!contains(o))
             return isRemoved;
 
-        Object[] copy = Arrays.copyOf(data, data.length);
+        for (int i = 0; i < elementsCount; i++){
+            boolean isNullElement = isNullObject(elements[i]);
 
-        int newLength = copy.length - 1;
-        data = new Object[newLength];
-
-        for (int i = 0, j = 0; i < newLength; i++, j++){
-            boolean isNullElement = isNullObject(copy[j]);
-
-            if (!isRemoved && ((isNullElement && isNullObject) || (!isNullElement && copy[j].equals(o)))){
-                i--;
-                isRemoved = true;
-            } else {
-                data[i] = copy[j];
+            if (!isRemoved && ((isNullElement && isNullObject) || (!isNullElement && elements[i].equals(o)))){
+                 isRemoved = true;
+            } else if (isRemoved) {
+                elements[i - 1] = elements[i];
             }
+        }
+
+        if (isRemoved){
+            elementsCount--;
         }
 
         return isRemoved;
@@ -118,22 +108,23 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public void clear() {
-        data = new Object[0];
+        elements = new Object[DEFAULT_LIST_SIZE];
+        elementsCount = 0;
     }
 
     @Override
     public E get(int index) {
         checkIndex(index);
 
-        return (E) data[index];
+        return (E) elements[index];
     }
 
     @Override
     public E set(int index, E element) {
         checkIndex(index);
 
-        Object oldItem = data[index];
-        data[index] = element;
+        Object oldItem = elements[index];
+        elements[index] = element;
 
         return (E) oldItem;
     }
@@ -141,44 +132,38 @@ public class MyArrayList<E> implements List<E> {
     @Override
     public void add(int index, E element) {
         checkIndex(index);
+        resize();
 
-        int newLength = data.length + 1;
-        Object[] copy = Arrays.copyOf(data, newLength);
-        data = new Object[newLength];
+        Object[] copy = Arrays.copyOfRange(elements, index + 1, elementsCount);
+        elements[index] = element;
 
-        for (int i = 0; i < newLength; i++) {
-            if (i < index){
-                data[i] = copy[i];
-            }
-            else if (i == index) {
-                data[i] = element;
-            }
-            else {
-                data[i] = copy[i - 1];
-            }
+        for (int i = 0; i < copy.length; i++) {
+                elements[i + index ] = copy[i];
         }
+
+        elementsCount++;
     }
 
     @Override
     public E remove(int index) {
         checkIndex(index);
+        resize();
 
         Object removedElement = null;
         boolean isRemoved = false;
-        int newLength = data.length - 1;
 
-        Object[] copy = Arrays.copyOf(data, data.length);
-        data = new Object[newLength];
-
-        for (int i = 0; i <= newLength; i++){
+        for (int i = 0; i < elementsCount; i++){
             if (i == index){
-                removedElement = copy[i];
+                removedElement = elements[i];
+                elements[i] = null;
                 isRemoved = true;
             } else if (isRemoved){
-                data[i - 1] = copy[i];
-            } else {
-                data[i] = copy[i];
+                elements[i - 1] = elements[i];
             }
+        }
+
+        if (isRemoved){
+            elementsCount--;
         }
 
         return (E) removedElement;
@@ -188,10 +173,10 @@ public class MyArrayList<E> implements List<E> {
     public int indexOf(Object o) {
         boolean isNullObject = isNullObject(o);
 
-        for (int i = 0; i < data.length; i++) {
-            boolean isNullElement = isNullObject(data[i]);
+        for (int i = 0; i < elementsCount; i++) {
+            boolean isNullElement = isNullObject(elements[i]);
 
-            if ((isNullElement && isNullObject) || (!isNullElement && data[i].equals(o))) {
+            if ((isNullElement && isNullObject) || (!isNullElement && elements[i].equals(o))) {
                 return i;
             }
         }
@@ -203,10 +188,10 @@ public class MyArrayList<E> implements List<E> {
     public int lastIndexOf(Object o) {
         boolean isNullObject = isNullObject(o);
 
-        for (int i = data.length - 1; i >= 0; i--) {
-            boolean isNullElement = isNullObject(data[i]);
+        for (int i = elements.length - 1; i >= 0; i--) {
+            boolean isNullElement = isNullObject(elements[i]);
 
-            if ((isNullElement && isNullObject) || (!isNullElement && data[i].equals(o))) {
+            if ((isNullElement && isNullObject) || (!isNullElement && elements[i].equals(o))) {
                 return i;
             }
         }
@@ -233,26 +218,18 @@ public class MyArrayList<E> implements List<E> {
         return object == null;
     }
 
-    private void checkIndex(int index){
-        if (index < 0 || index >= data.length) {
-            throw new ArrayIndexOutOfBoundsException();
+    private void resize() {
+        if (elementsCount != elements.length) {
+            return;
         }
+
+        int newLength = elements.length * 2;
+        elements = Arrays.copyOf(elements, newLength);
     }
 
-    private class MyIterator<E> implements Iterator<E> {
-        int currentIndex = 0;
-
-        @Override
-        public boolean hasNext() {
-            return currentIndex < data.length;
-        }
-
-        @Override
-        public E next() {
-            Object element = data[currentIndex];
-            currentIndex++;
-
-            return (E) element;
+    private void checkIndex(int index){
+        if (index < 0 || index >= elementsCount) {
+            throw new ArrayIndexOutOfBoundsException();
         }
     }
 
@@ -262,12 +239,12 @@ public class MyArrayList<E> implements List<E> {
 
         @Override
         public boolean hasNext() {
-            return currentIndex < data.length - 1;
+            return currentIndex < elementsCount;
         }
 
         @Override
         public E next() {
-            Object element = data[currentIndex];
+            Object element = elements[currentIndex];
             lastElementIndex = currentIndex;
 
             currentIndex++;
@@ -282,7 +259,7 @@ public class MyArrayList<E> implements List<E> {
 
         @Override
         public E previous() {
-            Object element = data[currentIndex];
+            Object element = elements[currentIndex];
             lastElementIndex = currentIndex;
 
             currentIndex--;

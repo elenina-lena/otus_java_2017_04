@@ -6,7 +6,6 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-
         System.out.println("Creating an empty list");
         List<Integer> myList = new MyArrayList<>();
         printSizeInfo(myList);
@@ -32,6 +31,10 @@ public class Main {
 
         System.out.println("Sorting list");
         Collections.sort(myList);
+        printList(myList);
+
+        System.out.println("Reverse list");
+        Collections.reverse(myList);
         printList(myList);
     }
 

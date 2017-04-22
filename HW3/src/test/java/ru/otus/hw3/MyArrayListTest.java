@@ -68,6 +68,18 @@ public class MyArrayListTest {
     }
 
     @Test
+    public void testNullElementContains(){
+        List<Integer> list = new MyArrayList<>();
+
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(null);
+
+        assertTrue(list.contains(null));
+    }
+
+    @Test
     public void testNotContains(){
         List<Integer> list = new MyArrayList<>();
 
@@ -107,6 +119,20 @@ public class MyArrayListTest {
     }
 
     @Test
+    public void testRemoveNullObject(){
+        List<String> list = new MyArrayList<>();
+
+        list.add("One");
+        list.add(null);
+        list.add("Three");
+
+        assertTrue(list.remove(null));
+        assertFalse(list.remove("Two"));
+
+        assertArrayEquals(list.toArray(), new String[]{"One", "Three"});
+    }
+
+    @Test
     public void testRemoveByIndex(){
         List<String> list = new MyArrayList<>();
 
@@ -127,10 +153,12 @@ public class MyArrayListTest {
         list.add("Two");
         list.add("Three");
         list.add("Four");
+        list.add(null);
 
         assertEquals(list.get(0), "One");
         assertEquals(list.get(1), "Two");
         assertEquals(list.get(3), "Four");
+        assertEquals(list.get(4), null);
     }
 
     @Test
