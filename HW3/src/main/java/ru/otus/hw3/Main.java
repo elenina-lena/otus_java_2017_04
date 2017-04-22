@@ -17,6 +17,17 @@ public class Main {
         printSizeInfo(myList);
         printList(myList);
 
+        System.out.println("Clears list");
+        myList.clear();
+        printSizeInfo(myList);
+
+        System.out.println("Adding elements to list");
+        myList.add(new Integer(3223));
+        myList.add(new Integer(3920));
+        myList.add(new Integer(23));
+        printSizeInfo(myList);
+        printList(myList);
+
         System.out.println("Copy list");
         List<Integer> newList = getNewList();
         Collections.copy(myList, newList);

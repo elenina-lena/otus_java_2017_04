@@ -108,7 +108,8 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public void clear() {
-        elements = new Object[DEFAULT_LIST_SIZE];
+        Arrays.fill(elements, null);
+
         elementsCount = 0;
     }
 
